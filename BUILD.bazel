@@ -1,0 +1,19 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/olpie101/dircopy
+gazelle(name = "gazelle")
+
+go_library(
+    name = "dircopy_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/olpie101/dircopy",
+    visibility = ["//visibility:private"],
+    deps = ["//cmd"],
+)
+
+go_binary(
+    name = "dircopy",
+    embed = [":dircopy_lib"],
+    visibility = ["//visibility:public"],
+)
