@@ -52,7 +52,6 @@ to quickly create a Cobra application.`,
 		if len(outputDir) == 0 {
 			log.Fatal("output-dir cannot be empty")
 		}
-		fmt.Println("od", outputDir, args)
 		err := dirCopy(outputDir, args)
 		if err != nil {
 			log.Fatal(err)
@@ -113,7 +112,6 @@ func initConfig() {
 
 func dirCopy(output string, files []string) error {
 	basePath := longestcommon.Prefix(files)
-	fmt.Println("lcp", basePath)
 	return copyFiles(output, basePath, files)
 }
 
@@ -131,7 +129,6 @@ func copyFiles(output, basePath string, files []string) error {
 
 		//do not return skip for files in basePath
 		if info.IsDir() {
-			fmt.Println("walking", err, "<p>", path)
 			// check to see if any of the paths has the prefix
 			found := false
 			for _, f := range files {
@@ -141,7 +138,6 @@ func copyFiles(output, basePath string, files []string) error {
 				}
 			}
 
-			fmt.Printf("will copy (%s) -> %t\n", path, found)
 			if !found {
 				return filepath.SkipDir
 			}
@@ -161,7 +157,7 @@ func copyFiles(output, basePath string, files []string) error {
 	fmt.Println("prefix", prefixPath)
 	for _, fp := range toCopy {
 		nfp := strings.Replace(fp, prefixPath, output, 1)
-		fmt.Println("creating", fp, "to", nfp)
+		fmt.Printf("creating (%s) for (%s)\n", nfp, nfp)
 		err := os.MkdirAll(nfp, os.ModePerm)
 		if err != nil {
 			return err
@@ -169,7 +165,7 @@ func copyFiles(output, basePath string, files []string) error {
 	}
 
 	for _, f := range files {
-		fmt.Println("copying files", files, prefixPath)
+		fmt.Println("copying files...")
 		destPath := strings.Replace(f, prefixPath, output, 1)
 
 		src, err := os.Open(f)
@@ -185,7 +181,6 @@ func copyFiles(output, basePath string, files []string) error {
 		_ = src
 		_ = dst
 
-		fmt.Println("copying", f, "to", destPath)
 		_, err = io.Copy(dst, src)
 		if err != nil {
 			return err
