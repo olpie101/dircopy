@@ -112,6 +112,17 @@ func initConfig() {
 
 func dirCopy(output string, files []string) error {
 	basePath := longestcommon.Prefix(files)
+
+	// if single file remove file
+	fi, err := os.Stat(basePath)
+	if err != nil {
+		return err
+	}
+
+	if !fi.IsDir() {
+		basePath = filepath.Dir(basePath)
+	}
+
 	return copyFiles(output, basePath, files)
 }
 
