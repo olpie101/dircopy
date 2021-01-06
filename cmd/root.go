@@ -116,7 +116,14 @@ func dirCopy(output string, files []string) error {
 	// if single file remove file
 	fi, err := os.Stat(basePath)
 	if err != nil {
-		return err
+		if !os.IsNotExist(err) {
+			return fmt.Errorf("unable to check if base path exists: %+v %w", err.(*os.PathError), err)
+		}
+		basePath = filepath.Dir(basePath)
+		fi, err = os.Stat(basePath)
+		if err != nil {
+			return fmt.Errorf("unable to check if base path exists: %+v %w", err.(*os.PathError), err)
+		}
 	}
 
 	if !fi.IsDir() {
